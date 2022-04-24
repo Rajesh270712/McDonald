@@ -38,11 +38,11 @@ var cartItem=JSON.parse(localStorage.getItem("cartItem")) || [];
 showMenu();
 function showMenu(){
     closeOrder();
-    item.forEach((item)=>{
+    item.forEach((item,index)=>{
         var box=document.createElement("div");
 
         var image=document.createElement("img");
-        image.setAttribute("src",item.img);
+        image.setAttribute("src",item. img);
 
         var name= document.createElement("h3");
         name.innerText=item.name;
@@ -50,7 +50,18 @@ function showMenu(){
         var check=document.createElement("input");
         check.setAttribute("type","checkbox")
         check.addEventListener("change",function(){
-            cartItem.push(item);
+            if(this.checked){
+                cartItem.push(item);
+                
+            }
+            else
+            {
+                if(index==cart.length-1)
+                {
+                    cartItem.pop() ;
+                }
+                cartItem.splice(index,1)
+            }
             localStorage.setItem("cartItem",JSON.stringify(cartItem))
         })
 
@@ -85,13 +96,13 @@ function showMenu(){
 
 document.querySelector("#order").addEventListener("click",function(){
       var promise=new Promise((resolve,reject)=>{
-          openWait();
           var cart=JSON.parse(localStorage.getItem("cartItem"));
-          if(cart!=null)
+          if(cart!=null || cart.length==0)
           {
+              openWait();
               resolve(cart)
           }
-         
+         reject();
         })
         
         promise.then((cart)=>
@@ -115,7 +126,9 @@ document.querySelector("#order").addEventListener("click",function(){
                 },5000)
                 localStorage.removeItem("cartItem")
           })
-      )
+      ).catch(function(){
+        alert("Please Select Item!")
+    })
 
       
     })
